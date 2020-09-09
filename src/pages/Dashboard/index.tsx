@@ -6,7 +6,6 @@ import api from '../../services/api'
 import logoImg from '../../assets/logo.svg'
 
 import { Title, Form, Repositories, Error } from './styles'
-import Repository from '../Repository';
 
 interface Respository {
     full_name: string;
@@ -14,6 +13,7 @@ interface Respository {
     owner:{
         login: string;
         avatar_url: string;
+        id: string;
     }
 }
 
@@ -44,10 +44,18 @@ const Dashboard: React.FC = () => {
             const response = await api.get<Respository>(`repos/${newRepo}`)
 
             const repository = response.data
-            if(repositories.indexOf(repository)){
-              setInputError('Este repositório ja está na lista')
-              return
-            }
+
+          //  console.log(repositories.indexOf(JSON.stringify(repository)))
+
+
+          for (let i = 0; i < repositories.length; i++) {
+                if(repository.owner.id == repositories[i].owner.id){
+                    setInputError('Este repo ja existe')
+                   return
+                }
+
+          }
+
 
             setRepositories([...repositories, repository])
             setNewRepo('')
